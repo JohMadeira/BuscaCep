@@ -21,9 +21,6 @@ type
     Label3: TLabel;
     edtLogradouroConsulta: TEdit;
     GroupBox2: TGroupBox;
-    MainMenu1: TMainMenu;
-    Opes1: TMenuItem;
-    Opes2: TMenuItem;
     Label4: TLabel;
     Label5: TLabel;
     GroupBox3: TGroupBox;
@@ -35,7 +32,6 @@ type
     btnConsulta: TSpeedButton;
     tabEndereco: TTabSheet;
     edtCepConsulta: TEdit;
-    AbreFrameTeste1: TMenuItem;
     GroupBox4: TGroupBox;
     DBGrid1: TDBGrid;
     dsDataSource: TDataSource;
@@ -46,7 +42,6 @@ type
     edtBairro: TDBEdit;
     edtUFRetorno: TDBEdit;
     procedure btnConsultaClick(Sender: TObject);
-    procedure Opes2Click(Sender: TObject);
     procedure pgcBuscaChange(Sender: TObject);
   private
     { Private declarations }
@@ -134,17 +129,6 @@ begin
   finally
     MsgForm.Free;
   end;
-end;
-
-procedure TfMain.Opes2Click(Sender: TObject);
-var
-  aux: integer;
-begin
-  for aux := 0 to fMain.ComponentCount -1 do
-    if fMain.Components[aux] is TEdit then
-      TEdit(fMain.Components[aux]).Clear
-    else if fMain.Components[aux] is TMemo then
-      TMemo(fMain.Components[aux]).Clear;
 end;
 
 function TfMain.PesquisaEndereco(pCepController: TCEPController; pParams: TArray<string>): boolean;

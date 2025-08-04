@@ -4,7 +4,7 @@ object fMain: TfMain
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Busca CEP'
-  ClientHeight = 586
+  ClientHeight = 606
   ClientWidth = 1027
   Color = clWhite
   Font.Charset = DEFAULT_CHARSET
@@ -12,7 +12,6 @@ object fMain: TfMain
   Font.Height = -12
   Font.Name = 'Segoe UI'
   Font.Style = []
-  Menu = MainMenu1
   Position = poMainFormCenter
   TextHeight = 15
   object GroupBox1: TGroupBox
@@ -154,7 +153,7 @@ object fMain: TfMain
       end
     end
     object rdgRetorno: TRadioGroup
-      Left = 832
+      Left = 833
       Top = 18
       Width = 185
       Height = 57
@@ -171,14 +170,14 @@ object fMain: TfMain
     Left = 0
     Top = 81
     Width = 1027
-    Height = 505
+    Height = 525
     Align = alClient
     Caption = 'Endere'#231'o'
     Color = clSilver
     ParentBackground = False
     ParentColor = False
     TabOrder = 1
-    ExplicitLeft = -8
+    ExplicitHeight = 505
     object Label4: TLabel
       Left = 14
       Top = 18
@@ -225,30 +224,30 @@ object fMain: TfMain
       Left = 744
       Top = 17
       Width = 281
-      Height = 239
+      Height = 259
       Align = alRight
       Caption = 'Retorno WS'
       TabOrder = 0
-      ExplicitHeight = 250
+      ExplicitHeight = 239
       object mmoJSON: TMemo
         Left = 2
         Top = 17
         Width = 277
-        Height = 220
+        Height = 240
         Align = alClient
         ScrollBars = ssVertical
         TabOrder = 0
-        ExplicitWidth = 237
-        ExplicitHeight = 231
+        ExplicitHeight = 220
       end
     end
     object GroupBox4: TGroupBox
       Left = 2
-      Top = 256
+      Top = 276
       Width = 1023
       Height = 247
       Align = alBottom
       TabOrder = 1
+      ExplicitTop = 256
       object DBGrid1: TDBGrid
         Left = 2
         Top = 17
@@ -318,20 +317,6 @@ object fMain: TfMain
       DataField = 'UF'
       DataSource = dsDataSource
       TabOrder = 7
-    end
-  end
-  object MainMenu1: TMainMenu
-    Left = 920
-    Top = 304
-    object Opes1: TMenuItem
-      Caption = 'Op'#231#245'es'
-      object Opes2: TMenuItem
-        Caption = 'Limpar Tela'
-        OnClick = Opes2Click
-      end
-      object AbreFrameTeste1: TMenuItem
-        Caption = 'Abre Frame Teste'
-      end
     end
   end
   object dsDataSource: TDataSource
