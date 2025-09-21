@@ -44,14 +44,17 @@ type
     procedure btnConsultaClick(Sender: TObject);
     procedure pgcBuscaChange(Sender: TObject);
   private
+  {$IfDef TEST}
+  public
+  {$EndIf}
     { Private declarations }
     MemTable: TFDMemTable;
     function MostrarMensagem(pTexto: string): Integer;
     function ValidaCampos: boolean;
     procedure PreencherCampos(pCep: TCep);
-    function PesquisaEndereco(pCepController: TCEPController; pParams: TArray<string>): boolean;
-  public
-    { Public declarations }
+    procedure PesquisaEndereco(pTipoPesquisa: TTipoPesquisa);
+    function ConsultaCEPBanco(pParams: TArray<string>; pCepController: TCEPController): TRetornoBusca;
+    function ConsultaCEPWS(pParams: TArray<string>; pCepController: TCEPController; pTipoPesquisa: TTipoPesquisa): TRetornoBusca;
   end;
 
 var
@@ -62,44 +65,30 @@ implementation
 {$R *.dfm}
 
 procedure TfMain.btnConsultaClick(Sender: TObject);
-var
-  vCepController: TCEPController;
-  vParams: TArray<string>;
-  vTipoPesquisa: TTipoPesquisa;
 begin
-  vTipoPesquisa := TTipoPesquisa(pgcBusca.Tag);
   if ValidaCampos then
-    begin
-      vCepController := TCEPController.Create;
-      vParams := [edtcepConsulta.Text, edtUFconsulta.Text, edtLocalidadeconsulta.Text, edtLogradouroconsulta.Text];
-      try
-        MemTable := TFDMemTable.Create(nil);
-        MemTable := vCepController.ConsultarCepBanco(vParams);
-        if vCepController.GetLoteCep <> nil then
-          begin
-            if MostrarMensagem('CEP encontrado na base de dados local.' + #13#10+ 'Deseja exibir os dados da base ou atualizá-lo com o WebService?') = mrNo then
-              MemTable := vCepController.ConsultarCEPWSEndereco(vParams, LowerCase(rdgRetorno.Items[rdgRetorno.ItemIndex]), vTipoPesquisa);
-          end
-        else
-          MemTable := vCepController.ConsultarCEPWSEndereco(vParams, LowerCase(rdgRetorno.Items[rdgRetorno.ItemIndex]), vTipoPesquisa);
-
-        if vCepController.GetLoteCep = nil then
-          begin
-            MessageDlg('CEP não encontrado em nenhuma base de dados', mtError, [mbOk], 0);
-            Exit;
-          end;
-        DBGrid1.DataSource.DataSet := MemTable;
-        DBGrid1.DataSource.DataSet.First;
-        PreencherCampos(vCepController.GetLoteCep[0]);
-
-        mmoJSON.Lines.Text := vCepController.CepComponente.Response;
-      finally
-        FreeAndNil(vCepController);
-      end;
-    end
+    PesquisaEndereco(TTipoPesquisa(pgcBusca.Tag))
   else
     MessageDlg('Erro: Campos com valores inválidos.' + #13#10 + 'Os campos de Logradouro e Localidade devem possuir no mínimo 3 caracteres, e a UF, 2',
       mtError, [mbOk], 0);
+end;
+
+function TfMain.ConsultaCEPBanco(pParams: TArray<string>; pCepController: TCEPController): TRetornoBusca;
+begin
+  Result := eNotFound;
+  MemTable := TFDMemTable.Create(nil);
+  MemTable := pCepController.ConsultarBanco(pParams);
+  if pCepController.GetLoteCep <> nil then
+    Result := eBD;
+end;
+
+function TfMain.ConsultaCEPWS(pParams: TArray<string>; pCepController: TCEPController; pTipoPesquisa: TTipoPesquisa): TRetornoBusca;
+begin
+  Result := eNotFound;
+  MemTable := TFDMemTable.Create(nil);
+  MemTable := pCepController.ConsultarWS(pParams, LowerCase(rdgRetorno.Items[rdgRetorno.ItemIndex]), pTipoPesquisa);
+  if pCepController.GetLoteCep <> nil then
+    Result := eWS;
 end;
 
 function TfMain.MostrarMensagem(pTexto: string): Integer;
@@ -131,39 +120,45 @@ begin
   end;
 end;
 
-function TfMain.PesquisaEndereco(pCepController: TCEPController; pParams: TArray<string>): boolean;
+procedure TfMain.PesquisaEndereco(pTipoPesquisa: TTipoPesquisa);
+var
+  vCepController: TCEPController;
+  vParams: TArray<string>;
+  vRetornoConsulta: TRetornoBusca;
 begin
-  MemTable := TFDMemTable.Create(nil);
-  MemTable := pCepController.ConsultarCepBanco(pParams);
-  if pCepController.GetLoteCep <> nil then
-    begin
-      if MostrarMensagem('CEP encontrado na base de dados local.' + #13#10+ 'Deseja exibir os dados da base ou atualizá-lo com o WebService?') = mrNo then
-        MemTable := pCepController.ConsultarCEPWSEndereco(pParams, LowerCase(rdgRetorno.Items[rdgRetorno.ItemIndex]), eCEp);
-    end
-  else
-    MemTable := pCepController.ConsultarCEPWSEndereco(pParams, LowerCase(rdgRetorno.Items[rdgRetorno.ItemIndex]), eCep);
+  vRetornoConsulta := eNotFound;
+  vCepController := TCEPController.Create;
+  vParams := [edtcepConsulta.Text, edtUFconsulta.Text, edtLocalidadeconsulta.Text, edtLogradouroconsulta.Text];
+  try
+    vRetornoConsulta := ConsultaCEPBanco(vParams, vCepController);
+    if vRetornoConsulta = eBD then
+      begin
+        if MostrarMensagem('CEP encontrado na base de dados local.' + #13#10+ 'Deseja exibir os dados da base ou atualizá-lo com o WebService?') = mrNo then
+          vRetornoConsulta := ConsultaCEPWS(vParams, vCepController, pTipoPesquisa);
+      end
+    else
+      vRetornoConsulta := ConsultaCEPWS(vParams, vCepController, pTipoPesquisa);
 
-  if pCepController.GetLoteCep = nil then
-    begin
-      MessageDlg('CEP não encontrado em nenhuma base de dados', mtError, [mbOk], 0);
-      Result := False;
-      Exit;
-    end;
-  DBGrid1.DataSource.DataSet := MemTable;
-  DBGrid1.DataSource.DataSet.First;
-  PreencherCampos(pCepController.GetLoteCep[0]);
+    if vRetornoConsulta = eNotFound then
+      MessageDlg('CEP não encontrado em nenhuma base de dados', mtError, [mbOk], 0)
+    else
+      begin
+        DBGrid1.DataSource.DataSet := MemTable;
+        DBGrid1.DataSource.DataSet.First;
+        PreencherCampos(vCepController.GetLoteCep[0]);
+        mmoJSON.Lines.Text := vCepController.CepComponente.Response;
+      end;
+  finally
+    FreeAndNil(vCepController);
+  end;
 end;
 
 procedure TfMain.pgcBuscaChange(Sender: TObject);
 begin
-  if pgcBusca.ActivePage = tabCEP then
-    edtCepConsulta.Clear
-  else
-    begin
-      edtUfConsulta.Clear;
-      edtLocalidadeConsulta.Clear;
-      edtLogradouroConsulta.Clear;
-    end;
+  edtCepConsulta.Clear;
+  edtUfConsulta.Clear;
+  edtLocalidadeConsulta.Clear;
+  edtLogradouroConsulta.Clear;
   pgcBusca.Tag := pgcBusca.ActivePageIndex;
 end;
 

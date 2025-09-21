@@ -22,8 +22,8 @@ type
     procedure SetLoteCep(const Value: TObjectList<TCEP>);
     constructor Create;
     destructor Destroy; override;
-    function ConsultarCepBanco(pParams: TArray<string>): TFDMemTable;
-    function ConsultarCepWSEndereco(pParams: TArray<string>; pConsulta: string; pTipoPesquisa: TTipoPesquisa): TFDMemTable;
+    function ConsultarBanco(pParams: TArray<string>): TFDMemTable;
+    function ConsultarWS(pParams: TArray<string>; pConsulta: string; pTipoPesquisa: TTipoPesquisa): TFDMemTable;
     function RetornaResposta: string;
     property CepComponente: TCepComponente read FCepComponente;
   end;
@@ -34,7 +34,7 @@ implementation
 
 uses uDAOCep, uConexaoController;
 
-function TCEPController.ConsultarCepBanco(pParams: TArray<string>): TFDMemTable;
+function TCEPController.ConsultarBanco(pParams: TArray<string>): TFDMemTable;
 var
   aux: integer;
 begin
@@ -68,7 +68,7 @@ begin
   end;
 end;
 
-function TCEPController.ConsultarCepWSEndereco(pParams: TArray<string>; pConsulta: string; pTipoPesquisa: TTipoPesquisa): TFDMemTable;
+function TCEPController.ConsultarWS(pParams: TArray<string>; pConsulta: string; pTipoPesquisa: TTipoPesquisa): TFDMemTable;
 var
   aux: integer;
 begin

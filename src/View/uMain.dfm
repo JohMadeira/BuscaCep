@@ -177,7 +177,6 @@ object fMain: TfMain
     ParentBackground = False
     ParentColor = False
     TabOrder = 1
-    ExplicitHeight = 505
     object Label4: TLabel
       Left = 14
       Top = 18
@@ -228,7 +227,6 @@ object fMain: TfMain
       Align = alRight
       Caption = 'Retorno WS'
       TabOrder = 0
-      ExplicitHeight = 239
       object mmoJSON: TMemo
         Left = 2
         Top = 17
@@ -237,7 +235,6 @@ object fMain: TfMain
         Align = alClient
         ScrollBars = ssVertical
         TabOrder = 0
-        ExplicitHeight = 220
       end
     end
     object GroupBox4: TGroupBox
@@ -247,7 +244,6 @@ object fMain: TfMain
       Height = 247
       Align = alBottom
       TabOrder = 1
-      ExplicitTop = 256
       object DBGrid1: TDBGrid
         Left = 2
         Top = 17

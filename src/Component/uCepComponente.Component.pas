@@ -32,7 +32,8 @@ uses REST.Json, uDAOCep;
 
 procedure TCepComponente.SetResponse(const Value: string);
 begin
-  FResponse := Value;
+  if Assigned(Self) then
+    FResponse := Value;
 end;
 
 function TCepComponente.RetornaBaseURL(pParams: TArray<string>; pConsulta: string): string;
@@ -97,7 +98,8 @@ begin
     SetResponse(RESTResponse.Content);
 
     if (Pos('erro', RESTResponse.Content) > 0) OR
-       (Length(RESTResponse.Content) = 2) then
+       (Length(RESTResponse.Content) = 2) OR
+       (Pos('logradouro', RESTResponse.Content) = 0) then
       begin
         Result := nil;
         Exit;

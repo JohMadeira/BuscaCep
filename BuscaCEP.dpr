@@ -10,13 +10,16 @@ uses
   uConexaoController in 'src\Controller\uConexaoController.pas',
   uDAOCep in 'src\DAO\uDAOCep.pas',
   uDAOConexao in 'src\DAO\uDAOConexao.pas',
-  uCommon in 'src\Common\uCommon.pas';
+  uCommon in 'src\Common\uCommon.pas',
+  Vcl.Themes,
+  Vcl.Styles;
 
 {$R *.res}
 
 begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
+  TStyleManager.TrySetStyle('Slate Classico');
   Application.CreateForm(TfMain, fMain);
   TConexaoController.getInstance().daoConexao.Create;
   TConexaoController.getInstance().daoConexao.getConexao().Connected := True;

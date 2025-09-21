@@ -45,3 +45,11 @@ Componentes Delphi personalizados são criados para encapsular funcionalidades d
 1. Abra o projeto `BuscaCEP.dpr` no Delphi.
 2. Compile e execute.
 3. Utilize a interface para consultar CEPs ou endereços.
+
+## Testes Automatizados
+
+O projeto inclui uma suíte de testes unitários baseada em DUnit, cobrindo controllers, componentes e validações principais. Os testes garantem a confiabilidade da lógica de negócio e facilitam a manutenção do código.
+
+## Como Executar
+1. Abra o projeto `BuscaCEPTest.dpr` no Delphi.
+2. Compile e execute.
